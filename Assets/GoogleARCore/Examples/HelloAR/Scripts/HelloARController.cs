@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+
+//-----------------------------------------------------------------------
 // <copyright file="HelloARController.cs" company="Google">
 //
 // Copyright 2017 Google Inc. All Rights Reserved.
@@ -48,7 +49,7 @@ namespace GoogleARCore.HelloAR
         /// <summary>
         /// A model to place when a raycast from a user touch hits a plane.
         /// </summary>
-        public GameObject AndyAndroidPrefab;
+        public GameObject CityPrefab;
 
         /// <summary>
         /// A gameobject parenting UI for displaying the "searching for planes" snackbar.
@@ -71,6 +72,8 @@ namespace GoogleARCore.HelloAR
         /// True if the app is in the process of quitting due to an ARCore connection error, otherwise false.
         /// </summary>
         private bool m_IsQuitting = false;
+
+        private bool CityonFloor = false;
 
         /// <summary>
         /// The Unity Update() method.
@@ -107,8 +110,10 @@ namespace GoogleARCore.HelloAR
                 // Instantiate a plane visualization prefab and set it to track the new plane. The transform is set to
                 // the origin with an identity rotation since the mesh for our prefab is updated in Unity World
                 // coordinates.
-                GameObject planeObject = Instantiate(TrackedPlanePrefab, Vector3.zero, Quaternion.identity,
-                    transform);
+                GameObject planeObject = Instantiate(TrackedPlanePrefab, Vector3.zero, Quaternion.identity,transform);
+
+
+
                 planeObject.GetComponent<TrackedPlaneVisualizer>().Initialize(m_NewPlanes[i]);
             }
 
@@ -136,29 +141,35 @@ namespace GoogleARCore.HelloAR
             // Raycast against the location the player touched to search for planes.
             TrackableHit hit;
             TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon |
-                TrackableHitFlags.FeaturePointWithSurfaceNormal;
+                                              TrackableHitFlags.FeaturePointWithSurfaceNormal;
 
             if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out hit))
             {
-                var andyObject = Instantiate(AndyAndroidPrefab, hit.Pose.position, hit.Pose.rotation);
-
-                // Create an anchor to allow ARCore to track the hitpoint as understanding of the physical
-                // world evolves.
-                var anchor = hit.Trackable.CreateAnchor(hit.Pose);
-
-                // Andy should look at the camera but still be flush with the plane.
-                if ((hit.Flags & TrackableHitFlags.PlaneWithinPolygon) != TrackableHitFlags.None)
+                if (!CityonFloor)
                 {
-                    // Get the camera position and match the y-component with the hit position.
-                    Vector3 cameraPositionSameY = FirstPersonCamera.transform.position;
-                    cameraPositionSameY.y = hit.Pose.position.y;
+                    var andyObject = Instantiate(CityPrefab, hit.Pose.position, hit.Pose.rotation);
+                    andyObject.tag = "target";
 
-                    // Have Andy look toward the camera respecting his "up" perspective, which may be from ceiling.
-                    andyObject.transform.LookAt(cameraPositionSameY, andyObject.transform.up);
+                    // Create an anchor to allow ARCore to track the hitpoint as understanding of the physical
+                    // world evolves.
+                    var anchor = hit.Trackable.CreateAnchor(hit.Pose);
+                    
+                    // Andy should look at the camera but still be flush with the plane.
+                    if ((hit.Flags & TrackableHitFlags.PlaneWithinPolygon) != TrackableHitFlags.None)
+                    {
+                        // Get the camera position and match the y-component with the hit position.
+                        Vector3 cameraPositionSameY = FirstPersonCamera.transform.position;
+                        cameraPositionSameY.y = hit.Pose.position.y;
+
+                        // Have Andy look toward the camera respecting his "up" perspective, which may be from ceiling.
+                        andyObject.transform.LookAt(cameraPositionSameY, andyObject.transform.up);
+                    }
+
+                    // Make Andy model a child of the anchor.
+                    andyObject.transform.parent = anchor.transform;
+
+                    CityonFloor = true;
                 }
-
-                // Make Andy model a child of the anchor.
-                andyObject.transform.parent = anchor.transform;
             }
         }
 
