@@ -51,6 +51,8 @@ namespace GoogleARCore.HelloAR
         /// </summary>
         public GameObject CityPrefab;
 
+        //public GameObject Andy;
+
         /// <summary>
         /// A gameobject parenting UI for displaying the "searching for planes" snackbar.
         /// </summary>
@@ -125,6 +127,7 @@ namespace GoogleARCore.HelloAR
                 if (m_AllPlanes[i].TrackingState == TrackingState.Tracking)
                 {
                     showSearchingUI = false;
+                    //CityonFloor = false;
                     break;
                 }
             }
@@ -147,8 +150,8 @@ namespace GoogleARCore.HelloAR
             {
                 if (!CityonFloor)
                 {
-                    var andyObject = Instantiate(CityPrefab, hit.Pose.position, hit.Pose.rotation);
-                    andyObject.tag = "target";
+                    var City = Instantiate(CityPrefab, hit.Pose.position, hit.Pose.rotation);
+                    City.tag = "target";
 
                     // Create an anchor to allow ARCore to track the hitpoint as understanding of the physical
                     // world evolves.
@@ -162,11 +165,11 @@ namespace GoogleARCore.HelloAR
                         cameraPositionSameY.y = hit.Pose.position.y;
 
                         // Have Andy look toward the camera respecting his "up" perspective, which may be from ceiling.
-                        andyObject.transform.LookAt(cameraPositionSameY, andyObject.transform.up);
+                        City.transform.LookAt(cameraPositionSameY, City.transform.up);
                     }
 
                     // Make Andy model a child of the anchor.
-                    andyObject.transform.parent = anchor.transform;
+                    City.transform.parent = anchor.transform;
 
                     CityonFloor = true;
                 }

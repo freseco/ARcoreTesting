@@ -16,7 +16,7 @@ public class Homing : MonoBehaviour {
 
     private AudioSource AS;
 
-    public bool destroyTarget = false;
+    public bool destroyTarget = true;
 
      Transform GO_target;
  
@@ -26,7 +26,7 @@ void Start()
         AS=transform.GetComponent<AudioSource>();
 
         //it destroys itselft after
-        Destroy(this, selftdestroydelay);
+        Destroy(gameObject, selftdestroydelay);
     }
 
     public void FireMissile()
@@ -48,28 +48,35 @@ void Start()
 
     }
 
-   IEnumerator Fire()
+    IEnumerator Fire()
     {
         yield return new WaitForSeconds(fuseDelay);
-        
+
         AudioSource.PlayClipAtPoint(missileClip, transform.position);
 
-      GO_target =  GameObject.FindGameObjectsWithTag("target")[0].transform;
+        //GO_target =  GameObject.FindGameObjectsWithTag("target")[0].transform;
 
 
-        //float distance = Mathf.Infinity;
+        float distance = Mathf.Infinity;
+
+        Transform target = null;
+
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("monster"))
+        {
+            float diff = (go.transform.position - transform.position).sqrMagnitude;
+
+            if (diff < distance)
+            {
+                distance = diff;
+                target = go.transform;
+            }
+
+
+        }
+
+        if (target != null) { 
+            GO_target = target; }
         
-        //foreach (GameObject go   in GameObject.FindGameObjectsWithTag("target"))
-        //{
-        //    float diff = (go.transform.position - transform.position).sqrMagnitude;
-
-        //    if (diff < distance)
-        //    {
-        //        distance = diff;
-        //        GO_target = go.transform.parent.transform;
-        //    }
-
-        //}
 
         yield return null;
 
@@ -78,7 +85,7 @@ void Start()
     void OnCollisionEnter(Collision theCollision)
     {
         
-        if (theCollision.gameObject.tag== "target")
+        if (theCollision.gameObject.tag== "monster")
         {
             
             
@@ -87,12 +94,14 @@ void Start()
 
             Instantiate(explotion, theCollision.contacts[0].point, new Quaternion());
 
-            Destroy(missileMod.gameObject);
+            //Destroy(missileMod.gameObject);
             //yield WaitForSeconds(5);
-            Destroy(gameObject);
+            
 
-            //if (destroyTarget)
-            //    Destroy(theCollision.gameObject);
+            if (destroyTarget)
+                Destroy(theCollision.gameObject);
+
+            Destroy(gameObject);
         }
 
         

@@ -10,11 +10,21 @@ public class MissileLauncher : MonoBehaviour {
     /// </summary>
     public Rigidbody missile;
 	
+    private int numEnemies()
+    {
+        return GameObject.FindGameObjectsWithTag("monster").Length;
+        
+        }
+
 	// Update is called once per frame
 	public void Fire () {
-       
-          GameObject newob=  Instantiate(missile, transform.position, transform.rotation).gameObject;
 
-          newob.GetComponent<Homing>().FireMissile();
+        if (numEnemies()>0)
+        {
+            //new missile
+            GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
+
+            newob.GetComponent<Homing>().FireMissile(); 
+        }
 	}
 }
