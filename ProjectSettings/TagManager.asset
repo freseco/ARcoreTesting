@@ -6,6 +6,7 @@ TagManager:
   tags:
   - target
   - monster
+  - point
   layers:
   - Default
   - TransparentFX

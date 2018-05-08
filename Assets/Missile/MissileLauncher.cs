@@ -27,4 +27,16 @@ public class MissileLauncher : MonoBehaviour {
             newob.GetComponent<Homing>().FireMissile(); 
         }
 	}
+
+    public void Fire(Vector3 targetpoint)
+    {
+
+        if (numEnemies() > 0)
+        {
+            //new missile
+            GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
+
+            newob.GetComponent<Homing>().FireMissile(targetpoint);
+        }
+    }
 }

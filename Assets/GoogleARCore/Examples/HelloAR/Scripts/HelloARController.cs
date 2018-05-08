@@ -77,6 +77,8 @@ namespace GoogleARCore.HelloAR
 
         private bool CityonFloor = false;
 
+        public MissileLauncher ML;
+
         /// <summary>
         /// The Unity Update() method.
         /// </summary>
@@ -168,10 +170,15 @@ namespace GoogleARCore.HelloAR
                         City.transform.LookAt(cameraPositionSameY, City.transform.up);
                     }
 
-                    // Make Andy model a child of the anchor.
+                    // Make city model a child of the anchor.
                     City.transform.parent = anchor.transform;
 
                     CityonFloor = true;
+                }
+                else
+                {
+                    //point to the missile
+                    ML.Fire(hit.Pose.position);
                 }
             }
         }

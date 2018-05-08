@@ -18,7 +18,7 @@ public class Homing : MonoBehaviour {
 
     public bool destroyTarget = true;
 
-     Transform GO_target;
+     Vector3 GO_target;
  
 void Start()
     {
@@ -31,24 +31,32 @@ void Start()
 
     public void FireMissile()
     {
+
+        StartCoroutine("AutoFire");
+    }
+
+    public void FireMissile(Vector3 targetpoint)
+    {
+        GO_target = targetpoint;
+
         StartCoroutine("Fire");
     }
 
     void FixedUpdate()
 
     {
-        if (GO_target == null || homingMissile == null)
+        if (homingMissile == null)
             return;
 
         homingMissile.velocity = transform.forward * missileVelocity;
 
-        Quaternion targetRotation = Quaternion.LookRotation(GO_target.position - transform.position);
+        Quaternion targetRotation = Quaternion.LookRotation(GO_target - transform.position);
 
         homingMissile.MoveRotation(Quaternion.RotateTowards(transform.rotation, targetRotation, turn));
 
     }
 
-    IEnumerator Fire()
+    IEnumerator AutoFire()
     {
         yield return new WaitForSeconds(fuseDelay);
 
@@ -63,20 +71,32 @@ void Start()
 
         foreach (GameObject go in GameObject.FindGameObjectsWithTag("monster"))
         {
-            float diff = (go.transform.position - transform.position).sqrMagnitude;
+            Transform point = go.transform.GetChild(2);
+
+            float diff = (point.position - transform.position).sqrMagnitude;
 
             if (diff < distance)
             {
                 distance = diff;
-                target = go.transform;
+                target = point;
             }
 
 
         }
 
         if (target != null) { 
-            GO_target = target; }
+            GO_target = target.position; }
         
+
+        yield return null;
+
+    }
+
+    IEnumerator Fire()
+    {
+        yield return new WaitForSeconds(fuseDelay);
+
+        AudioSource.PlayClipAtPoint(missileClip, transform.position);
 
         yield return null;
 
@@ -87,24 +107,27 @@ void Start()
         
         if (theCollision.gameObject.tag== "monster")
         {
-            
-            
+
+
             //SmokePrefab.emissionRate = 0.0f;
             //theCollision.contacts[0].point;
 
-            Instantiate(explotion, theCollision.contacts[0].point, new Quaternion());
+            GameObject.Find("Canvas").GetComponent<CounterEnemies>().addenemie();
 
             //Destroy(missileMod.gameObject);
             //yield WaitForSeconds(5);
-            
+
 
             if (destroyTarget)
-                Destroy(theCollision.gameObject);
+            {
+               Destroy(theCollision.gameObject);
+            }
 
-            Destroy(gameObject);
+          
         }
 
-        
+          Instantiate(explotion, theCollision.contacts[0].point, new Quaternion());
+          Destroy(gameObject);
     }
     
 }
