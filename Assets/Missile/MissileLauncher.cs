@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class MissileLauncher : MonoBehaviour {
 
-   
+    private bool shoot = false;
+
+    private void Start()
+    {
+        StartCoroutine("firemissile");
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -18,14 +24,8 @@ public class MissileLauncher : MonoBehaviour {
 
 	// Update is called once per frame
 	public void Fire () {
-
-        if (numEnemies()>0)
-        {
-            //new missile
-            GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
-
-            newob.GetComponent<Homing>().FireMissile(); 
-        }
+        shoot = true;
+       
 	}
 
     public void Fire(Vector3 targetpoint)
@@ -37,6 +37,30 @@ public class MissileLauncher : MonoBehaviour {
             GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
 
             newob.GetComponent<Homing>().FireMissile(targetpoint);
+        }
+    }
+
+
+    IEnumerator firemissile()
+    {
+        while (true)
+        {
+
+            if (shoot)
+            {
+                shoot = false;
+
+                if (numEnemies() > 0)
+                {
+                    //new missile
+                    GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
+
+                    newob.GetComponent<Homing>().FireMissile();
+                }
+            }
+
+            yield return new WaitForSeconds(2f);
+            
         }
     }
 }

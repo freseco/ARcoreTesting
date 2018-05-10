@@ -250,7 +250,7 @@ MonoBehaviour:
   missileMod: {fileID: 1219244017844408}
   SmokePrefab: {fileID: 198588830097357688}
   missileClip: {fileID: 8300000, guid: 234e0b815b663cf42b4f5d37b8f09c0b, type: 3}
-  explotion: {fileID: 1609257596030446, guid: 8c3bf9a99dd792942ac9b2dc0e2e5caf, type: 2}
+  explotion: {fileID: 1501533532470560, guid: 6355da6b213cc074b97c52de81e3ee8f, type: 2}
   selftdestroydelay: 5
   destroyTarget: 1
 --- !u!136 &136139486306772696

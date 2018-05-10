@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Homing : MonoBehaviour {
 
@@ -65,24 +66,30 @@ void Start()
         //GO_target =  GameObject.FindGameObjectsWithTag("target")[0].transform;
 
 
-        float distance = Mathf.Infinity;
+        //float distance = Mathf.Infinity;
 
         Transform target = null;
 
-        foreach (GameObject go in GameObject.FindGameObjectsWithTag("monster"))
-        {
-            Transform point = go.transform.GetChild(2);
+        GameObject[] listmonster = GameObject.FindGameObjectsWithTag("monster");
 
-            float diff = (point.position - transform.position).sqrMagnitude;
+        target=listmonster[Random.Range(0, listmonster.Length)].transform.GetChild(2).transform;//gets the child headpoint
 
-            if (diff < distance)
-            {
-                distance = diff;
-                target = point;
-            }
+        //foreach (GameObject go in GameObject.FindGameObjectsWithTag("monster"))
+        //{
+        //    Transform point = go.transform.GetChild(2);
+
+        //    float diff = (point.position - transform.position).sqrMagnitude;
+
+        //    if (diff < distance)
+        //    {
+        //        distance = diff;
+        //        target = point;
+        //    }
 
 
-        }
+        //}
+
+
 
         if (target != null) { 
             GO_target = target.position; }
@@ -125,6 +132,11 @@ void Start()
 
           
         }
+
+
+        Debug.Log("Collision with: " + theCollision.gameObject.name);
+
+        GameObject.Find("debugtext").transform.GetComponent<Text>().text = theCollision.gameObject.name;
 
           Instantiate(explotion, theCollision.contacts[0].point, new Quaternion());
           Destroy(gameObject);

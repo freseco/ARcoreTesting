@@ -77,6 +77,8 @@ namespace GoogleARCore.HelloAR
 
         private bool CityonFloor = false;
 
+        public Transform ARcamera;
+
         public MissileLauncher ML;
 
         /// <summary>
@@ -180,6 +182,10 @@ namespace GoogleARCore.HelloAR
                     //point to the missile
                     ML.Fire(hit.Pose.position);
                 }
+            }
+            else //the screen has been touched but outside of the surface
+            {
+                ML.Fire(ARcamera.position +ARcamera.forward*5);
             }
         }
 
