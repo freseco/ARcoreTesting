@@ -5,6 +5,9 @@ using UnityEngine;
 public class MissileLauncher : MonoBehaviour {
 
     private bool shoot = false;
+    public Transform ARcamera;
+
+    public List<Transform> pointslaunch = new List<Transform>();
 
     private void Start()
     {
@@ -33,13 +36,30 @@ public class MissileLauncher : MonoBehaviour {
 
         if (numEnemies() > 0)
         {
-            //new missile
-            GameObject newob = Instantiate(missile, transform.position, transform.rotation).gameObject;
+            GameObject newob = CreateNewMissile();
 
             newob.GetComponent<Homing>().FireMissile(targetpoint);
         }
     }
 
+    private GameObject CreateNewMissile()
+    {
+        //new missile
+        return Instantiate(missile,pointslaunch[Random.Range(0, pointslaunch.Count)].transform.position, transform.rotation).gameObject;
+    }
+
+    public void Firestraigh()
+    {
+        if (numEnemies() > 0)
+        {
+            //new missile
+            GameObject newob = CreateNewMissile();
+
+            newob.GetComponent<Homing>().FireMissile( ARcamera.position + ARcamera.forward * 5);
+        }
+
+        
+    }
 
     IEnumerator firemissile()
     {

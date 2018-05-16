@@ -25,6 +25,7 @@ namespace GoogleARCore.HelloAR
     using GoogleARCore;
     using UnityEngine;
     using UnityEngine.Rendering;
+    using UnityEngine.UI;
 
 #if UNITY_EDITOR
     // Set up touch input propagation while using Instant Preview in the editor.
@@ -77,7 +78,7 @@ namespace GoogleARCore.HelloAR
 
         private bool CityonFloor = false;
 
-        public Transform ARcamera;
+        public GameObject crosshair;
 
         public MissileLauncher ML;
 
@@ -154,6 +155,8 @@ namespace GoogleARCore.HelloAR
             {
                 if (!CityonFloor)
                 {
+                    crosshair.GetComponent<Image>().enabled = true;
+
                     var City = Instantiate(CityPrefab, hit.Pose.position, hit.Pose.rotation);
                     City.tag = "target";
 
@@ -177,16 +180,16 @@ namespace GoogleARCore.HelloAR
 
                     CityonFloor = true;
                 }
-                else
-                {
-                    //point to the missile
-                    ML.Fire(hit.Pose.position);
-                }
+                //else
+                //{
+                //    //point to the missile
+                //    ML.Fire(hit.Pose.position);
+                //}
             }
-            else //the screen has been touched but outside of the surface
-            {
-                ML.Fire(ARcamera.position +ARcamera.forward*5);
-            }
+            //else //the screen has been touched but outside of the surface
+            //{
+            //    ML.Fire(ARcamera.position +ARcamera.forward*5);
+            //}
         }
 
         /// <summary>
