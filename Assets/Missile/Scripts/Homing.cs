@@ -136,7 +136,7 @@ void Start()
 
         Debug.Log("Collision with: " + theCollision.gameObject.name);
 
-        GameObject.Find("debugtext").transform.GetComponent<Text>().text = theCollision.gameObject.name;
+        //GameObject.Find("debugtext").transform.GetComponent<Text>().text = theCollision.gameObject.name;
 
           Instantiate(explotion, theCollision.contacts[0].point, new Quaternion());
           Destroy(gameObject);
